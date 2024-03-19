@@ -1,21 +1,26 @@
 import sys
 
 import pygame
+from player import Player
 
 
 class Game:
     def __init__(self):
-        pass
+        player_sprite = Player(
+            (screen_width / 2, screen_height), screen_width, 5)
+        self.player = pygame.sprite.GroupSingle(player_sprite)
 
     def run(self):
-        pass
+        self.player.update()
+        self.player.sprite.lasers.draw(screen)
+        self.player.draw(screen)
 
 
 if __name__ == '__main__':
     pygame.init()
-    SCREEN_WIDTH = 600
-    SCREEN_HEIGHT = 600
-    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    screen_width = 600
+    screen_height = 600
+    screen = pygame.display.set_mode((screen_width, screen_height))
     clock = pygame.time.Clock()
     game = Game()
 
