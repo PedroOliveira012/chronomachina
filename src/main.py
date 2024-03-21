@@ -15,6 +15,15 @@ class Game:
             (screen_width / 2, screen_height), screen_width, 5)
         self.player = pygame.sprite.GroupSingle(player_sprite)
 
+        # vidas e pontuação
+        self.lives = 3
+        self.live_surf = pygame.image.load(
+            './chronomachina/graphics/player.png').convert_alpha()
+        self.live_x_start_pos = screen_width - \
+            (self.live_surf.get_size()[0] * 2 + 20)
+        self.score = 0
+        self.font = pygame.font.Font('./chronomachina/font/Pixeled.ttf', 20)
+
         # setup do obstaculo
         self.shape = obstacle.shape
         self.block_size = 6
@@ -89,7 +98,11 @@ class Game:
                     laser.kill()
 
                 # colisão com o alien
-                if pygame.sprite.spritecollide(laser, self.aliens, True):
+                alien_hit = pygame.sprite.spritecollide(
+                    laser, self.aliens, True)
+                if alien_hit:
+                    for alien in alien_hit:
+                        self.score += alien.value
                     laser.kill()
 
                 # colisão com o laser do alien
@@ -105,21 +118,35 @@ class Game:
                 # colisão com o alien
                 if pygame.sprite.spritecollide(laser, self.player, False):
                     laser.kill()
-                    print('morreu')
+                    self.lives -= 1
+                    if self.lives <= 0:
+                        pygame.quit()
+                        sys.exit()
+
+    def display_lives(self):
+        for live in range(self.lives - 1):
+            x = self.live_x_start_pos + \
+                (live * (self.live_surf.get_size()[0] + 10))
+            screen.blit(self.live_surf, (x, 8))
+
+    def display_score(self):
+        score_surf = self.font.render(f'score: {self.score}', False, 'white')
+        score_rect = score_surf.get_rect(topleft=(10, -10))
+        screen.blit(score_surf, score_rect)
 
     def run(self):
         self.player.update()
         self.aliens.update(self.alien_direction)
-        self.alien_position_checker()
         self.alien_laser.update()
+        self.alien_position_checker()
         self.collision_checks()
-
         self.player.sprite.lasers.draw(screen)
         self.player.draw(screen)
-
         self.blocks.draw(screen)
         self.aliens.draw(screen)
         self.alien_laser.draw(screen)
+        self.display_lives()
+        self.display_score()
 
 
 if __name__ == '__main__':
