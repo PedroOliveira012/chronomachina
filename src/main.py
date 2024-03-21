@@ -134,6 +134,13 @@ class Game:
         score_rect = score_surf.get_rect(topleft=(10, -10))
         screen.blit(score_surf, score_rect)
 
+    def victory(self):
+        if not self.aliens.sprites():
+            victory_surf = self.font.render('Você venceu', False, 'white')
+            victory_rect = victory_surf.get_rect(
+                center=(screen_width / 2, screen_height / 2))
+            screen.blit(victory_surf, victory_rect)
+
     def run(self):
         self.player.update()
         self.aliens.update(self.alien_direction)
@@ -147,6 +154,7 @@ class Game:
         self.alien_laser.draw(screen)
         self.display_lives()
         self.display_score()
+        self.victory()
 
 
 if __name__ == '__main__':
