@@ -18,7 +18,7 @@ class Game:
         # vidas e pontuação
         self.lives = 3
         self.live_surf = pygame.image.load(
-            './chronomachina/graphics/player.png').convert_alpha()
+            './chronomachina/graphics/extra.png').convert_alpha()
         self.live_x_start_pos = screen_width - \
             (self.live_surf.get_size()[0] * 2 + 20)
         self.score = 0
@@ -39,6 +39,11 @@ class Game:
         self.alien_laser = pygame.sprite.Group()
         self.alien_setup(rows=6, cols=8)
         self.alien_direction = 1
+
+        # audio
+        music = pygame.mixer.Sound('chronomachina/audio/music.mp3')
+        music.set_volume(0.3)
+        music.play(loops=-1)
 
     def create_obstacle(self, x_start, y_start, offset_x):
         for row_index, row in enumerate(self.shape):
@@ -161,8 +166,10 @@ if __name__ == '__main__':
     pygame.init()
     screen_width = 600
     screen_height = 600
+    bg = pygame.image.load('chronomachina/graphics/background.png')
     screen = pygame.display.set_mode((screen_width, screen_height))
     clock = pygame.time.Clock()
+
     game = Game()
 
     ALIENLASER = pygame.USEREVENT + 1
@@ -176,6 +183,7 @@ if __name__ == '__main__':
             if event.type == ALIENLASER:
                 game.alien_shoot()
         screen.fill((30, 30, 30))
+        screen.blit(bg, (0, 0))
         game.run()
 
         pygame.display.flip()
